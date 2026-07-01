@@ -39,6 +39,10 @@ contract MyToken {
         emit Transfer(from, to, amount);
     }
 
+    function mint(uint256 amount, address owner) external {
+        _mint(owner, amount);
+    }
+
     function _mint(address owner, uint256 amount) internal {
         totalSupply += amount;
         balanceOf[owner] += amount;
