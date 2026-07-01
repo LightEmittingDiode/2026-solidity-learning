@@ -17,7 +17,7 @@ abstract contract ManagedAccess {
     }
 
     modifier onlyManager() {
-        require(msg.sender == manager, "You are not managable for this token");
+        require(msg.sender == manager, "You are not manageable for this contract");
         _;
     }
 }
