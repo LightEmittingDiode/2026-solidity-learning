@@ -2,9 +2,7 @@ import hre from "hardhat";
 import { expect } from "chai";
 import { MyToken } from "../typechain-types";
 import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
-
-const MINTINGAMOUNT = 100n;
-const DECIMALS = 18n;
+import { DECIMALS, MINTING_AMOUNT } from "./constant";
 
 describe("My Token", () => {
   let myTokenC: MyToken;
@@ -17,7 +15,7 @@ describe("My Token", () => {
       "MyToken",
       "MT",
       DECIMALS,
-      MINTINGAMOUNT,
+      MINTING_AMOUNT,
     ]);
   });
 
@@ -33,7 +31,7 @@ describe("My Token", () => {
     });
     it("should return 100 totalSupply", async () => {
       expect(await myTokenC.totalSupply()).equal(
-        MINTINGAMOUNT * 10n ** DECIMALS,
+        MINTING_AMOUNT * 10n ** DECIMALS,
       );
     });
   });
@@ -43,7 +41,7 @@ describe("My Token", () => {
     it("should return 1MT balance for signer 0", async () => {
       const signer0 = signers[0];
       expect(await myTokenC.balanceOf(signer0.address)).equal(
-        MINTINGAMOUNT * 10n ** DECIMALS,
+        MINTING_AMOUNT * 10n ** DECIMALS,
       );
     });
   });
@@ -81,7 +79,7 @@ describe("My Token", () => {
       await expect(
         myTokenC.transfer(
           signer1.address,
-          hre.ethers.parseUnits((MINTINGAMOUNT + 1n).toString(), DECIMALS),
+          hre.ethers.parseUnits((MINTING_AMOUNT + 1n).toString(), DECIMALS),
         ),
       ).to.be.revertedWith("insufficient balance");
     });
