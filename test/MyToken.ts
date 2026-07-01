@@ -1,10 +1,10 @@
 import hre from "hardhat";
 import { expect } from "chai";
 import { MyToken } from "../typechain-types";
-import { HardhatEthersSigner } from "@nomicfoundation/hardhat-toolbox";
+import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 
-const mintingAmount = 100n;
-const decimals = 18n;
+const MINTINGAMOUNT = 100n;
+const DECIMALS = 18n;
 
 describe("My Token", () => {
   let myTokenC: MyToken;
@@ -16,8 +16,8 @@ describe("My Token", () => {
     myTokenC = await hre.ethers.deployContract("MyToken", [
       "MyToken",
       "MT",
-      decimals,
-      mintingAmount,
+      DECIMALS,
+      MINTINGAMOUNT,
     ]);
   });
 
@@ -28,12 +28,12 @@ describe("My Token", () => {
     it("should return symbol", async () => {
       expect(await myTokenC.symbol()).equal("MT");
     });
-    it("should return decimals", async () => {
-      expect(await myTokenC.decimals()).equal(decimals);
+    it("should return DECIMALS", async () => {
+      expect(await myTokenC.decimals()).equal(DECIMALS);
     });
     it("should return 100 totalSupply", async () => {
       expect(await myTokenC.totalSupply()).equal(
-        mintingAmount * 10n ** decimals,
+        MINTINGAMOUNT * 10n ** DECIMALS,
       );
     });
   });
@@ -43,7 +43,7 @@ describe("My Token", () => {
     it("should return 1MT balance for signer 0", async () => {
       const signer0 = signers[0];
       expect(await myTokenC.balanceOf(signer0.address)).equal(
-        mintingAmount * 10n ** decimals,
+        MINTINGAMOUNT * 10n ** DECIMALS,
       );
     });
   });
@@ -55,24 +55,24 @@ describe("My Token", () => {
       await expect(
         myTokenC.transfer(
           signer1.address,
-          hre.ethers.parseUnits("0.5", decimals),
+          hre.ethers.parseUnits("0.5", DECIMALS),
         ),
       )
         .to.emit(myTokenC, "Transfer")
         .withArgs(
           signer0.address,
           signer1.address,
-          hre.ethers.parseUnits("0.5", decimals),
+          hre.ethers.parseUnits("0.5", DECIMALS),
         );
       expect(1)
         .to.emit(myTokenC, "Transfer")
         .withArgs(
           signer0.address,
           signer1.address,
-          hre.ethers.parseUnits("0.5", decimals),
+          hre.ethers.parseUnits("0.5", DECIMALS),
         );
       expect(await myTokenC.balanceOf(signer1.address)).equal(
-        hre.ethers.parseUnits("0.5", decimals),
+        hre.ethers.parseUnits("0.5", DECIMALS),
       );
     });
 
@@ -81,7 +81,7 @@ describe("My Token", () => {
       await expect(
         myTokenC.transfer(
           signer1.address,
-          hre.ethers.parseUnits((mintingAmount + 1n).toString(), decimals),
+          hre.ethers.parseUnits((MINTINGAMOUNT + 1n).toString(), DECIMALS),
         ),
       ).to.be.revertedWith("insufficient balance");
     });
@@ -94,11 +94,11 @@ describe("My Token", () => {
       await expect(
         myTokenC.approve(
           signer1.address,
-          hre.ethers.parseUnits("10", decimals),
+          hre.ethers.parseUnits("10", DECIMALS),
         ),
       )
         .to.emit(myTokenC, "Approval")
-        .withArgs(signer1.address, hre.ethers.parseUnits("10", decimals));
+        .withArgs(signer1.address, hre.ethers.parseUnits("10", DECIMALS));
     });
 
     it("should be reverted with insufficient allowance error", async () => {
@@ -110,7 +110,7 @@ describe("My Token", () => {
           .transferFrom(
             signer0.address,
             signer1.address,
-            hre.ethers.parseUnits("1", decimals),
+            hre.ethers.parseUnits("1", DECIMALS),
           ),
       ).to.be.revertedWith("insufficient allowance");
     });
@@ -119,7 +119,7 @@ describe("My Token", () => {
     it("should successfully transfer MT tokens from signer0 to signer1 using transferFrom", async () => {
       const signer0 = signers[0];
       const signer1 = signers[1];
-      const transferAmount = hre.ethers.parseUnits("5", decimals);
+      const transferAmount = hre.ethers.parseUnits("5", DECIMALS);
 
       await myTokenC.approve(signer1.address, transferAmount);
 
